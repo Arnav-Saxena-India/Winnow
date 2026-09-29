@@ -1,0 +1,262 @@
+{
+ "doc": "lecture.pdf",
+ "labeller": "bootstrap: text-layer output, checked by eye against the debug render",
+ "pages": {
+  "1": [
+   {
+    "box": [
+     136,
+     62,
+     369,
+     80
+    ],
+    "kind": "chrome",
+    "text": "Balanced Binary Search Trees"
+   },
+   {
+    "box": [
+     136,
+     119,
+     794,
+     166
+    ],
+    "kind": "heading",
+    "text": "Balanced Binary Search Trees"
+   },
+   {
+    "box": [
+     136,
+     209,
+     235,
+     229
+    ],
+    "kind": "chrome",
+    "text": "2026-09-19"
+   },
+   {
+    "box": [
+     136,
+     268,
+     859,
+     428
+    ],
+    "kind": "body",
+    "text": "A binary search tree keeps its keys in s"
+   },
+   {
+    "box": [
+     902,
+     300,
+     1014,
+     318
+    ],
+    "kind": "annotation",
+    "text": "ask about AVL"
+   },
+   {
+    "box": [
+     364,
+     462,
+     486,
+     486
+    ],
+    "kind": "equation",
+    "text": "h = O(log n)"
+   },
+   {
+    "box": [
+     292,
+     606,
+     666,
+     865
+    ],
+    "kind": "figure",
+    "text": ""
+   },
+   {
+    "box": [
+     212,
+     902,
+     573,
+     920
+    ],
+    "kind": "caption",
+    "text": "Fig 3. A balanced binary search tree of "
+   },
+   {
+    "box": [
+     538,
+     1529,
+     593,
+     1547
+    ],
+    "kind": "chrome",
+    "text": "Page 1"
+   }
+  ],
+  "2": [
+   {
+    "box": [
+     136,
+     62,
+     369,
+     80
+    ],
+    "kind": "chrome",
+    "text": "Balanced Binary Search Trees"
+   },
+   {
+    "box": [
+     136,
+     157,
+     269,
+     187
+    ],
+    "kind": "heading",
+    "text": "Rotations"
+   },
+   {
+    "box": [
+     136,
+     220,
+     843,
+     298
+    ],
+    "kind": "body",
+    "text": "A rotation changes the shape of a subtre"
+   },
+   {
+    "box": [
+     364,
+     332,
+     473,
+     360
+    ],
+    "kind": "equation",
+    "text": "x^2 + y^2 = r^2"
+   },
+   {
+    "box": [
+     136,
+     398,
+     811,
+     448
+    ],
+    "kind": "body",
+    "text": "Rotations are constant-time operations, "
+   },
+   {
+    "box": [
+     136,
+     1489,
+     341,
+     1505
+    ],
+    "kind": "chrome",
+    "text": "Draft notes, not for distribution"
+   },
+   {
+    "box": [
+     909,
+     1489,
+     995,
+     1505
+    ],
+    "kind": "chrome",
+    "text": "@cse_notes"
+   },
+   {
+    "box": [
+     538,
+     1529,
+     593,
+     1547
+    ],
+    "kind": "chrome",
+    "text": "Page 2"
+   }
+  ],
+  "3": [
+   {
+    "box": [
+     136,
+     62,
+     369,
+     80
+    ],
+    "kind": "chrome",
+    "text": "Balanced Binary Search Trees"
+   },
+   {
+    "box": [
+     136,
+     157,
+     350,
+     187
+    ],
+    "kind": "heading",
+    "text": "Red-black trees"
+   },
+   {
+    "box": [
+     136,
+     220,
+     845,
+     298
+    ],
+    "kind": "body",
+    "text": "A red-black tree colours every node and "
+   },
+   {
+    "box": [
+     250,
+     415,
+     688,
+     682
+    ],
+    "kind": "figure",
+    "text": ""
+   },
+   {
+    "box": [
+     250,
+     705,
+     516,
+     723
+    ],
+    "kind": "caption",
+    "text": "Figure 4. Rotation cost by tree size"
+   },
+   {
+    "box": [
+     136,
+     778,
+     772,
+     828
+    ],
+    "kind": "body",
+    "text": "In practice red-black trees perform fewe"
+   },
+   {
+    "box": [
+     136,
+     1496,
+     311,
+     1512
+    ],
+    "kind": "chrome",
+    "text": "Scanned by CamScanner"
+   },
+   {
+    "box": [
+     538,
+     1529,
+     593,
+     1547
+    ],
+    "kind": "chrome",
+    "text": "Page 3"
+   }
+  ]
+ }
+}

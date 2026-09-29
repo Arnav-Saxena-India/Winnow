@@ -1,0 +1,11 @@
+# secrets: the AI Hub token lives here
+.env
+__pycache__/
+.pytest_cache/
+*.labels.json.tmp
+# your own lecture notes: not for redistribution
+Combinatorics.pdf
+# local editor and assistant settings
+.claude/
+# build outputs
+*.zip

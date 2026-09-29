@@ -1,0 +1,88 @@
+{
+ "doc": "scan_p3.png",
+ "labeller": "same boxes as lecture.labels.json page 3",
+ "pages": {
+  "1": [
+   {
+    "box": [
+     136,
+     62,
+     369,
+     80
+    ],
+    "kind": "chrome",
+    "text": "Balanced Binary Search Trees"
+   },
+   {
+    "box": [
+     136,
+     157,
+     350,
+     187
+    ],
+    "kind": "heading",
+    "text": "Red-black trees"
+   },
+   {
+    "box": [
+     136,
+     220,
+     845,
+     298
+    ],
+    "kind": "body",
+    "text": "A red-black tree colours every node and "
+   },
+   {
+    "box": [
+     250,
+     415,
+     688,
+     682
+    ],
+    "kind": "figure",
+    "text": ""
+   },
+   {
+    "box": [
+     250,
+     705,
+     516,
+     723
+    ],
+    "kind": "caption",
+    "text": "Figure 4. Rotation cost by tree size"
+   },
+   {
+    "box": [
+     136,
+     778,
+     772,
+     828
+    ],
+    "kind": "body",
+    "text": "In practice red-black trees perform fewe"
+   },
+   {
+    "box": [
+     136,
+     1496,
+     311,
+     1512
+    ],
+    "kind": "chrome",
+    "text": "Scanned by CamScanner"
+   },
+   {
+    "box": [
+     538,
+     1529,
+     593,
+     1547
+    ],
+    "kind": "chrome",
+    "text": "Page 3"
+   }
+  ]
+ }
+}

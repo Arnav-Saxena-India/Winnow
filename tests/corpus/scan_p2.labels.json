@@ -1,0 +1,88 @@
+{
+ "doc": "scan_p2.png",
+ "labeller": "same boxes as lecture.labels.json page 2",
+ "pages": {
+  "1": [
+   {
+    "box": [
+     136,
+     62,
+     369,
+     80
+    ],
+    "kind": "chrome",
+    "text": "Balanced Binary Search Trees"
+   },
+   {
+    "box": [
+     136,
+     157,
+     269,
+     187
+    ],
+    "kind": "heading",
+    "text": "Rotations"
+   },
+   {
+    "box": [
+     136,
+     220,
+     843,
+     298
+    ],
+    "kind": "body",
+    "text": "A rotation changes the shape of a subtre"
+   },
+   {
+    "box": [
+     364,
+     332,
+     473,
+     360
+    ],
+    "kind": "equation",
+    "text": "x^2 + y^2 = r^2"
+   },
+   {
+    "box": [
+     136,
+     398,
+     811,
+     448
+    ],
+    "kind": "body",
+    "text": "Rotations are constant-time operations, "
+   },
+   {
+    "box": [
+     136,
+     1489,
+     341,
+     1505
+    ],
+    "kind": "chrome",
+    "text": "Draft notes, not for distribution"
+   },
+   {
+    "box": [
+     909,
+     1489,
+     995,
+     1505
+    ],
+    "kind": "chrome",
+    "text": "@cse_notes"
+   },
+   {
+    "box": [
+     538,
+     1529,
+     593,
+     1547
+    ],
+    "kind": "chrome",
+    "text": "Page 2"
+   }
+  ]
+ }
+}

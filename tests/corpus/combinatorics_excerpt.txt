@@ -1,0 +1,15 @@
+Combinatorics is the study of counting.
+But not counting by listing.
+Instead:
+- Counting using logic
+- Counting when numbers are too large to enumerate
+Why combinatorics is needed in Competitive Programming
+In CP, you will often see:
+- n up to 10^5, 10^6, or even 10^9
+- Listing all possibilities is impossible
+Example
+- How many binary strings of length 100000 exist?
+You cannot generate them.
+But you can count them.
+Answer:
+2^100000

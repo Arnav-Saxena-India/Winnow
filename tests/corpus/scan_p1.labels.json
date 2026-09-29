@@ -1,0 +1,98 @@
+{
+ "doc": "scan_p1.png",
+ "labeller": "same boxes as lecture.labels.json page 1",
+ "pages": {
+  "1": [
+   {
+    "box": [
+     136,
+     62,
+     369,
+     80
+    ],
+    "kind": "chrome",
+    "text": "Balanced Binary Search Trees"
+   },
+   {
+    "box": [
+     136,
+     119,
+     794,
+     166
+    ],
+    "kind": "heading",
+    "text": "Balanced Binary Search Trees"
+   },
+   {
+    "box": [
+     136,
+     209,
+     235,
+     229
+    ],
+    "kind": "chrome",
+    "text": "2026-09-19"
+   },
+   {
+    "box": [
+     136,
+     268,
+     859,
+     428
+    ],
+    "kind": "body",
+    "text": "A binary search tree keeps its keys in s"
+   },
+   {
+    "box": [
+     902,
+     300,
+     1014,
+     318
+    ],
+    "kind": "annotation",
+    "text": "ask about AVL"
+   },
+   {
+    "box": [
+     364,
+     462,
+     486,
+     486
+    ],
+    "kind": "equation",
+    "text": "h = O(log n)"
+   },
+   {
+    "box": [
+     292,
+     606,
+     666,
+     865
+    ],
+    "kind": "figure",
+    "text": ""
+   },
+   {
+    "box": [
+     212,
+     902,
+     573,
+     920
+    ],
+    "kind": "caption",
+    "text": "Fig 3. A balanced binary search tree of "
+   },
+   {
+    "box": [
+     538,
+     1529,
+     593,
+     1547
+    ],
+    "kind": "chrome",
+    "text": "Page 1"
+   }
+  ]
+ }
+}
