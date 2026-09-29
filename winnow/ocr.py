@@ -2,7 +2,7 @@
 
 The engine is injected (``backends.make_ocr``); this module never imports a
 backend (invariant 2). Nothing is filtered by confidence: unreadable text is
-reported, never dropped (§10).
+reported, never dropped.
 """
 from __future__ import annotations
 

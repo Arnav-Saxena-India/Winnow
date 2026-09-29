@@ -1,4 +1,4 @@
-"""§7 step 2: ms per figure for the describer on a Snapdragon X Elite NPU.
+"""Milliseconds per figure for the describer on a Snapdragon X Elite NPU.
 
 A figure description is not one forward pass. It is
 

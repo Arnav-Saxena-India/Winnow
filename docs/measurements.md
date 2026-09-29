@@ -3,7 +3,7 @@
 Only numbers that were actually measured go here. Where the measurement is someone
 else's, or a number is derived from measurements, the section says so.
 
-## Describer latency on Snapdragon X Elite (§7 step 2)
+## Describer latency on Snapdragon X Elite
 
 **Verdict: precompute at document open.** With token counts measured from the real
 model and prompt v5, an average figure takes 3.1 s at best and 6.6 s typically; the
@@ -15,8 +15,8 @@ per output token. Decoding is 85-95% of the total, which is why timing the encod
 alone (what the probe originally did) would have pointed at the wrong architecture.
 
 **Source of the numbers.** These are Qualcomm's own AI Hub profiles on a hosted
-Snapdragon X Elite CRD, published in `qai-hub-models` v0.63.0 (`perf.yaml`). We did not
-run these jobs: our AI Hub account is configured and lists the device, but the model
+Snapdragon X Elite CRD, published in `qai-hub-models` v0.63.0 (`perf.yaml`); Qualcomm
+ran them, not us: our AI Hub account is configured and lists the device, but the model
 weights to export could not be downloaded on this network. The job IDs are Qualcomm's.
 The totals below are derived from those numbers, not measured end to end.
 
@@ -49,7 +49,7 @@ The longest description (223 + 112 tokens) takes 4507 / 9804 ms. Prompt v3 avera
 
 Each prompt on the 4 corpus figures and 9 noise/blank images (6 random-noise seeds,
 blank, blurred noise, salt-and-pepper). A prompt only counts if every noise image
-still falls back to UNCLEAR: a made-up description is worse than none (§10).
+still falls back to UNCLEAR: a made-up description is worse than none.
 
 | prompt | noise caught | figures described | mean output tokens |
 | --- | --- | --- | --- |
@@ -121,13 +121,13 @@ cluster, against `sparse_max_density` = 0.25:
 | paper Fig. 1 (labelled line chart) | 1.37 | figure |
 | paper Tables 3-5 (ruled) | 1.88 - 2.37 | table |
 | paper Fig. 2 architecture columns | 2.20 - 3.78 | figure |
-| body text (§9) | 3 - 8 | text |
+| body text | 3 - 8 | text |
 
 The 0.25 cut was measured on scanned line drawings. Labelled charts in a real paper
 sit at 1-4, overlapping tables and approaching body text, so density alone cannot
 separate them. A cut near 1.5 would fix this paper's two charts and exclude its
-tables, but that is one document; it is left for the benchmark (step 7-8), and
-tables are a scope decision (§15).
+tables, but that is one document; it was left for the benchmark, and
+tables were handled separately (below).
 
 ## Charts, tables and diagrams on four real papers
 

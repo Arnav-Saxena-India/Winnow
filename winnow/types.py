@@ -1,6 +1,6 @@
 """The two data types, the typed errors, and every tunable threshold.
 
-`Config` is the single home of every number a decision is made on (§9).
+`Config` is the single home of every number a decision is made on.
 If you are about to write a literal threshold anywhere else, add a field here.
 """
 from __future__ import annotations
@@ -94,7 +94,7 @@ class Config:
     stroke_fig_max_density: float = 4.0   # chars/kpx²: a cluster with a diagonal stroke under this
                                      # density is a figure. On 4 real papers (46 clusters, labelled by
                                      # eye): charts 0.48-1.70, diagrams 0-3.78, tables 1.07-5.07 but
-                                     # never a diagonal stroke; body text 3-8 (§9)
+                                     # never a diagonal stroke; body text 3-8
     table_rule_min_w: int = 80       # px; a horizontal rule at least this long may bound a table
     table_rule_tol: int = 12         # px; edges this close are one rule (a thin rect's two edges)
     table_rule_overlap: float = 0.8  # rules overlapping this share of the shorter are one table
@@ -120,7 +120,7 @@ class Config:
     band_bottom: float = 0.92
     small_ratio: float = 0.88        # × body LINE height — see 8a
     faint_delta: int = 42            # grey levels lighter than body median ink
-    heading_ratio: float = 1.15      # × body line height. Known too strict — fix at step 8 with data
+    heading_ratio: float = 1.15      # × body line height. Probably too strict; tune with benchmark data
     heading_dark_delta: int = 10
     heading_max_chars: int = 120
     chrome_max_chars: int = 90
@@ -145,7 +145,7 @@ class Config:
     col_separation: float = 0.18
     col_align_tol: float = 0.03      # × page width; blocks of one column share a left edge
     col_min_blocks: int = 2          # a lone centred title or author line is not a column
-    col_span_min: float = 0.25       # blocks wider than this define the text column (§10)
+    col_span_min: float = 0.25       # blocks wider than this define the text column
     spanning_width: float = 0.6      # a block wider than this spans all columns
     margin_max_width: float = 0.16
     caption_max_gap: int = 90        # px

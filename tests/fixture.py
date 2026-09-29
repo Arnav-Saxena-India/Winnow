@@ -1,7 +1,7 @@
 """The synthetic fixture: eleven regions on a 1200x1600 page, plus a drawn
 image of that page so the debug render and segmentation have pixels.
 
-Every classification path is exercised, and every §8 bug has its trap:
+Every classification path is exercised, and every known failure mode (docs/design.md) has its trap:
 the title repeats the header's words at a different height (8b) inside the
 top band as a single line (8a); a bare ISO date sits at 14% (8c).
 """

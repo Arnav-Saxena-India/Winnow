@@ -1,4 +1,4 @@
-"""Tier 4 guards: the reward hacks in §11 must never be promoted."""
+"""Tier 4 guards: the tuner's traps (docs/design.md) must never be promoted."""
 from __future__ import annotations
 
 import unittest

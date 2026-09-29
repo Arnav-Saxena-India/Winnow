@@ -111,7 +111,7 @@ def phash(gray: np.ndarray) -> str:
 
 
 class DescriptionCache:
-    """Keyed on phash + model + prompt version — never the image alone (§10),
+    """Keyed on phash + model + prompt version — never the image alone,
     or a prompt edit silently serves stale descriptions."""
 
     def __init__(self):

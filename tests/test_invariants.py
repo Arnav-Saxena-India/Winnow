@@ -1,4 +1,4 @@
-"""§3: every invariant has a test."""
+"""Every invariant in docs/design.md has a test."""
 from __future__ import annotations
 
 import ast

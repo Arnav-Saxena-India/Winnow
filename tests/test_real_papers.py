@@ -1,4 +1,4 @@
-"""Figures, captions and columns in real papers (§16).
+"""Figures, captions and columns in real papers.
 
 Found running four arXiv papers (1512.03385, 1412.6980, 1502.03167,
 1706.03762); they are not redistributable, so each bug is rebuilt here as a

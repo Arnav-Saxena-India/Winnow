@@ -65,7 +65,7 @@ class TestTier1(unittest.TestCase):
 class TestTier2(unittest.TestCase):
 
     def test_two_page_doc_refuses_to_repair(self):
-        """The §11 failure: a 1-1 tie must not un-suppress a correct header."""
+        """A 1-1 tie must not un-suppress a correct header (docs/design.md)."""
         pages = [_page("chrome"), _page("body")]
         before = copy.deepcopy(pages)
         findings, repairs = selfcheck.reconcile(pages)

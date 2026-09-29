@@ -1,4 +1,4 @@
-"""Plan the benchmark (§7 steps 7-8): which documents both labellers do.
+"""Plan the benchmark: which documents both labellers do.
 
     python tools/bench_plan.py bench/docs --overlap-pages 20 --seed 0 > bench/plan.txt
 

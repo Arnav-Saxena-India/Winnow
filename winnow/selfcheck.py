@@ -1,6 +1,6 @@
 """Self-correction without labels: contradiction, disagreement, incoherence.
 
-Tier 1 (``check_page``) asserts the §3 invariants on every page; an
+Tier 1 (``check_page``) asserts the invariants (docs/design.md) on every page; an
 ``error`` fails the run. Tier 2 (``reconcile``) treats the document as its
 own consistency check: the same text at the same position should get the
 same kind on every page.

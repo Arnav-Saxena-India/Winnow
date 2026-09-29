@@ -3,7 +3,7 @@
 For each prompt: are the corpus figures described (not UNCLEAR), how long are
 the descriptions, and do 9 noise/blank images still fall back to UNCLEAR?
 A prompt is only better if it keeps 9/9 on noise: a fabricated description is
-worse than none (§10).
+worse than none.
 
     python tools/prompt_check.py
 

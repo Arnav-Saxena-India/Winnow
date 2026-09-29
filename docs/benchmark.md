@@ -1,6 +1,6 @@
-# Benchmark protocol (build steps 7, 8 and 8b)
+# Benchmark protocol
 
-This is the one part of the build that needs people. Every tool is built and tested;
+This is the one part of the project that needs people. Every tool is built and tested;
 what is missing is about 100 labelled pages and a second labeller for 20 of them.
 Until this is done, every accuracy figure in this repository is measured against one
 person's labels.
@@ -19,7 +19,7 @@ and write down where each document came from:
 | anything else people read | 15 | forms, handouts, pages with margin notes |
 
 If a bucket cannot be filled (no handwritten pages, say), stop and decide whether
-the claim narrows (prompt.md §15). Do not quietly leave it out.
+the claim narrows, and say so in the results. Do not quietly leave it out.
 
 Keep documents whose licence allows sharing if the benchmark is to be published.
 Otherwise keep only the label files and a list of sources.
@@ -80,7 +80,7 @@ Report, in `docs/measurements.md`:
 1. Cohen's kappa on the overlap. If it is low, fix the label guide above and relabel.
    A low kappa means the task is ill-defined, not that Winnow is wrong.
 2. The holdout line: content precision first, then chrome recall, content lost and
-   kind accuracy. Precision is never quoted alone (§11).
+   kind accuracy. Precision is never quoted alone.
 3. What `tune` proposed and whether it was promoted. A change that buys recall with
-   precision is shown, never taken (§15). The holdout is scored once. Running it again
+   precision is shown, never taken. The holdout is scored once. Running it again
    after each change turns it into a second tuning split.

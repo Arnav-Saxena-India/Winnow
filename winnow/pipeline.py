@@ -157,7 +157,7 @@ def _finish(page: Page, describer, cache, cfg: Config, tel: Telemetry) -> None:
 def describe_pages(doc: Document, describer, cfg: Config = DEFAULT, on_page=None) -> None:
     """Describe the figures of a document that is already being read, page by
     page in reading order, replanning each page as its figures come in. One
-    worker: the model is one device (§13). A description takes 5-7 s on this
+    worker: the model is one device. A description takes 5-7 s on this
     CPU; the text before a figure usually takes longer to speak, so the
     listener rarely waits, where before nothing was spoken until every figure
     in the document had been described."""

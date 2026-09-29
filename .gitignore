@@ -9,3 +9,5 @@ Combinatorics.pdf
 .claude/
 # build outputs
 *.zip
+# local notes
+prompt.md

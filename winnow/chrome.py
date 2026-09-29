@@ -1,4 +1,4 @@
-"""Chrome detection — the furniture rules, in priority order (§6).
+"""Chrome detection — the furniture rules, in priority order.
 
 First match wins; order is load-bearing. Fixes 8b (position is part of the
 repeat key) and 8c (date chips need no band) are here. Each rule returns
@@ -55,7 +55,7 @@ def mark_rule(r, text, ev, body_lh, cfg):
     """Unread ink that cannot be words: a drawn line, or one lone mark (a code
     block's "}", an ellipsis). On a real page, 11 of these were each announced
     as "Text here could not be read." Two or more letter-sized shapes are
-    never a mark: an unreadable word is still reported, not hidden (§10)."""
+    never a mark: an unreadable word is still reported, not hidden."""
     if r.nature != "text" or text:
         return None
     w, h = r.x1 - r.x0, r.y1 - r.y0

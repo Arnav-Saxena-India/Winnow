@@ -36,7 +36,7 @@ class EasyOcr:
 
     def read(self, gray: np.ndarray) -> list[dict]:
         """-> words {x0, top, x1, bottom, text, conf(0-100)}. Nothing filtered
-        by confidence: unreadable text is reported, never dropped (§10)."""
+        by confidence: unreadable text is reported, never dropped."""
         with _quiet_torch():
             return _words(self._reader.readtext(gray, detail=1, paragraph=False))
 

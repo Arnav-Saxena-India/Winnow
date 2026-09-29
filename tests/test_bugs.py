@@ -1,4 +1,4 @@
-"""§8 and §16: every bug found is an assertion so it cannot come back."""
+"""Every bug found is an assertion, so it cannot come back."""
 from __future__ import annotations
 
 import unittest

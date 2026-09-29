@@ -114,8 +114,8 @@ def _real_vlm():
 
 
 class TestRealDescriber(unittest.TestCase):
-    """Step 9 against the real model (§14: a figure produces a description that
-    is not its caption). Skipped when no local VLM is served."""
+    """The real model: a figure produces a description that is not its
+    caption. Skipped when no local vision model is served."""
 
     @classmethod
     def setUpClass(cls):

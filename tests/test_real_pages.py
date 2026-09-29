@@ -1,4 +1,4 @@
-"""Bugs found on real documents, each rebuilt synthetically (§16).
+"""Bugs found on real documents, each rebuilt synthetically.
 
 Found on ``Combinatorics.pdf``: one page 17 × 103 inches, light handwriting-
 style text on black, no text layer. Before these fixes Winnow said only

@@ -1,4 +1,4 @@
-"""§7 step 9 / step 2: run the real describer on every figure of a document.
+"""Run the real describer on every figure of a document.
 
 Prints, per figure: the caption, what the model said, what the listener hears,
 the token counts Ollama reports, and this machine's wall time. The token counts

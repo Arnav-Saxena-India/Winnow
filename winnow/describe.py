@@ -1,4 +1,4 @@
-"""The VLM branch: figures only (§5). Body text is already text.
+"""The VLM branch: figures only. Body text is already text.
 
 ``describe_figures`` crops each figure, asks the injected describer (cached on
 phash + model + prompt version), and writes ``meta["description"]`` and

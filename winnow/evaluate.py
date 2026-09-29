@@ -1,4 +1,4 @@
-"""Benchmark scoring (step 7-8) and offline threshold learning (tier 4).
+"""Benchmark scoring and offline threshold learning (tier 4).
 
 Labels: JSON ``{"doc": path, "labeller": name, "pages": {"1": [{"box": [x0,y0,x1,y1],
 "kind": k}, ...]}}`` in work-height pixels (what `winnow render` draws).

@@ -1,4 +1,4 @@
-"""Input adapter: PDF text layer -> Regions. No OCR, no models (§7 step 3).
+"""Input adapter: PDF text layer -> Regions. No OCR, no models.
 
 Coordinates are scaled by ``segment.work_scale`` (``work_height`` tall, or
 ``work_min_width`` wide for a very tall page); every pixel threshold in Config

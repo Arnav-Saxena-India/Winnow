@@ -1,4 +1,4 @@
-"""Labelling window for the benchmark (§7 step 7): one keypress per box.
+"""Labelling window for the benchmark: one keypress per box.
 
     python -m winnow label DOC OUT.labels.json --labeller NAME   # blank template
     python -m winnow annotate OUT.labels.json                    # this window

@@ -1,4 +1,4 @@
-"""Figures and tables in a text-layer PDF page (§7 step 3).
+"""Figures and tables in a text-layer PDF page.
 
 A figure is a cluster of vector graphics or embedded images that is sparse in
 text, or that holds a diagonal stroke and is not as dense as body text (a

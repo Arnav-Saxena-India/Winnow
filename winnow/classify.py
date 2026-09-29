@@ -71,7 +71,7 @@ def body_column_span(regions: list[Region], page_w: int,
     """Left edge of the first text column to right edge of the last. Wide
     blocks are grouped into columns by left edge, and each edge is a median
     within its column. Never min/max: one page-wide footer stretches that to
-    the full page and margin notes vanish (§10). A single median over all
+    the full page and margin notes vanish. A single median over all
     blocks lands on one column of a two-column page, and every narrow block in
     the other column became a "margin note" (found on a real paper)."""
     wide = [r for r in regions if (r.x1 - r.x0) / max(1, page_w) > cfg.col_span_min]

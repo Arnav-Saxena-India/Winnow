@@ -1,4 +1,4 @@
-"""Generate tests/corpus/lecture.pdf — the step 3 test document.
+"""Generate tests/corpus/lecture.pdf — the text-layer test document.
 
 Three A4 pages of lecture notes built to trip every known failure:
   8a  title is a single large line inside the top band

@@ -1,10 +1,28 @@
 # Winnow
 
-Every text-to-speech tool can read. None knows what is worth reading.
+**A read-aloud tool that knows what is worth reading.**
 
-Same page of `tests/corpus/lecture.pdf`, read two ways:
+Winnow reads PDFs, scans and photos of pages aloud, entirely on your own machine. Unlike
+ordinary read-aloud, it decides what each part of a page *is* before speaking it:
 
-**Naive read-aloud** (the text layer, top to bottom — what Edge does):
+- **Skips page furniture**: running headers, page numbers, watermarks such as "Scanned
+  by CamScanner", date stamps, and stamps printed sideways in the margin. Every skip is
+  listed with its reason, so nothing disappears without a trace.
+- **Describes figures** with a local vision model instead of reading out tick labels,
+  using the caption as context. When the model cannot read a figure it says so, rather
+  than inventing a description.
+- **Reads tables row by row**, naming each value by its column header.
+- **Speaks equations as words**: "x squared plus y squared equals r squared", not
+  "x 2 plus y 2 equals r 2".
+- **Announces margin notes** between paragraphs, never in the middle of a sentence.
+- **Stays offline.** Every run happens under a network guard, and the window shows its
+  counter: `net 0`.
+
+## The difference, on one page
+
+The same page of `tests/corpus/lecture.pdf`, read two ways.
+
+**Ordinary read-aloud** (the text layer, top to bottom):
 
 > Balanced Binary Search Trees Balanced Binary Search Trees 2026-09-19 A binary search
 > tree keeps its keys in sorted order, so lookup, insertion and deletion can skip half of
@@ -21,242 +39,161 @@ Same page of `tests/corpus/lecture.pdf`, read two ways:
 > Margin note: ask about AVL
 > h equals big O of log n
 > Figure 3: The figure is a binary tree diagram showing a balanced binary search tree with
-> a height of 2. The root node is 8, which has two children: 4 and 12. The node 4 has two
-> children: 2 and 6. The node 12 has two children: 10 and 14. […]
+> a height of 2. The root node is 8, which has two children: 4 and 12. […]
 >
 > *Skipped: "Balanced Binary Search Trees" — repeats at this position on 3 of 3 pages ·
 > "2026-09-19" — date stamp · "Page 1" — repeats at this position on 3 of 3 pages*
 
-The naive reader says the tree's labels, "8 4 12 2 6 10 14", and moves on. Winnow
-describes the figure itself, using the caption as context, never reading the caption
-alone. The description comes from Qwen3-VL-2B running on this machine; with no model
-it falls back audibly to "Figure 3: A balanced binary search tree of height 2. Figure,
-not described." On page 2 the naive reader says "x2 + y2 = r2"; Winnow says "x squared
-plus y squared equals r squared". Reproduce with
+The ordinary reader says the tree's node labels, "8 4 12 2 6 10 14", and moves on.
+Winnow describes the figure itself. Try it:
 `python -m winnow compare tests/corpus/lecture.pdf --describer llamacpp`.
-
-## Limits — read these first
-
-- **Speed on this laptop** (i5-12500H, Iris Xe, no NPU), measured:
-  a text PDF is ready to speak in 0.5 s and a scanned page in 2.0 s. Figures are
-  described behind the reader, 3.9-4.7 s each (image encoder on the Iris Xe, language
-  model on the CPU). Reading waits only if it reaches a figure still being described.
-- **The NPU, measured on Qualcomm AI Hub** (a hosted Snapdragon X Elite, not this
-  laptop): EasyOCR's recogniser takes 19.1 ms per text line with all 3,121 layers on
-  the NPU, against 140 ms on this CPU, and reads a real line identically. Winnow
-  cannot use it here: this laptop has no NPU. The describer's language model was not
-  run on the NPU by us; Qualcomm's published profile gives 3.1-6.6 s per figure there,
-  no faster than this laptop, because writing the description one token at a time
-  dominates. "Ask a figure a question" (§12 upgrade 1) is not built: the spec gates it
-  on latency under 3 s.
-- **No independent benchmark yet.** The labels in `tests/corpus/` were bootstrapped from
-  Winnow's own output and checked by eye, so scoring against them is a regression check.
-  Winnow has also been run on five real documents (four arXiv papers and one long page
-  of notes), and every bug found is now a test. But the figure and table results below
-  are measured against my own labels (46 graphics clusters, 21 captioned tables), not a
-  second person's. Steps 7, 8 and 8b need people. The tools are ready: a planner that
-  draws the holdout, a labelling window with one keypress per box, scoring, agreement
-  and the tuner. The protocol is in `docs/benchmark.md`.
-- **Tables are read only from a PDF's text layer, and only with a caption** ("Table N",
-  or "Figure N"). Tables in scans are read row by row as plain text. Columns closer than
-  16 px merge: a 20-column table, and Transformer Table 3's eight tight numeric columns,
-  come out with several values in one cell. A symbol the PDF's font does not map (the
-  "×" in "13.3 × 10⁶" in one paper) comes out as "�".
-- **OCR is slow on long pages.** EasyOCR on CPU reads the 13,445 px `Combinatorics.pdf`
-  page in 89 s (it took about 2 minutes before the switch to full precision). A normal
-  scanned page takes about 2 s. On that page's handwriting-style font, full precision
-  misreads about 5 words in 890 more than 8-bit ("progranming"); on printed scans it
-  is as good (253 vs 252 of 263 words). On scans it loses superscripts: `x² + y² = r²`
-  comes back as "x2 + Y2 =".
-- Once, straight after a module split, the test suite took 133 s and one test failed.
-  It has not recurred in six full runs since, and I could not find the cause.
-
-What to do next, in order, is in `docs/next-steps.md`.
-
-## Run it
-
-```
-pip install -r requirements.txt
-python -m winnow fetch-models                      # once: EasyOCR weights (~100 MB)
-python -m winnow ui tests/corpus/lecture.pdf       # the window; or drag a PDF onto it
-python -m winnow read tests/corpus/lecture.pdf     # transcript (+ --speak, --tier 0|1|2)
-python -m winnow read tests/corpus/scan_p1.png     # a scan: OCR, no text layer
-python -m winnow render tests/corpus/lecture.pdf out/   # debug render of every page
-python -m winnow read DOC --no-repair --json       # raw output, reproducible exactly
-python -m winnow label DOC OUT.labels.json --labeller NAME   # a label file to fill in
-python -m winnow annotate OUT.labels.json          # fill it in: one keypress per box
-python -m winnow eval tests/corpus/*.labels.json   # content precision, then chrome recall
-python -m pytest tests                             # 110 tests
-python tools/ocr_compare.py DOC TRUTH.txt --box X0 Y0 X1 Y1   # word recall per OCR engine
-python tools/prompt_check.py                       # describe prompts: length vs noise
-python tools/bench_plan.py FOLDER                  # benchmark: draw the holdout, list commands
-python tools/aihub_ocr.py                          # OCR recogniser on a Snapdragon X Elite NPU (AI Hub)
-```
-
-Without EasyOCR's weights, scans fall back to Windows' built-in OCR, which reports no
-confidence (`conf = -1`) and read 62% of the words on the handwriting-style page that
-EasyOCR read at 97%.
-
-**Figure descriptions** need a local vision model. With llama.cpp (a release from
-github.com/ggml-org/llama.cpp) and Qwen's GGUF files
-(huggingface.co/Qwen/Qwen3-VL-2B-Instruct-GGUF: `Qwen3VL-2B-Instruct-Q4_K_M.gguf` and
-`mmproj-Qwen3VL-2B-Instruct-Q8_0.gguf`, 1.55 GB together). Use the **Vulkan** build
-with `-ngl 0`: the image encoder then runs on the integrated GPU and the language
-model on the CPU, 25-30% faster per figure than the CPU build (all layers on the
-Iris Xe was no faster: it writes more slowly):
-
-```
-llama-server -m Qwen3VL-2B-Instruct-Q4_K_M.gguf --mmproj mmproj-Qwen3VL-2B-Instruct-Q8_0.gguf --host 127.0.0.1 --port 8080 -c 4096 -ngl 0
-python -m winnow read tests/corpus/lecture.pdf --describer llamacpp
-python tools/describe_bench.py tests/corpus/lecture.pdf --backend llamacpp   # tokens, timing
-```
-
-`--describer ollama:qwen3-vl:2b` also works with Ollama. Importing these GGUF files into
-Ollama is reported to crash on the first image, so use its own `ollama pull qwen3-vl:2b`.
-Both servers listen on loopback only, so the offline guard still holds.
-
-Every document run happens inside `telemetry.assert_offline()`. Any socket to a
-non-loopback address raises and is counted, and the window's **net 0** reads that
-counter. Speech is Windows SAPI with local voices.
 
 ## The window
 
-![](docs/ui.png)
+![The Winnow window](docs/ui.png)
 
-Furniture is greyed out on the page. The region being spoken is outlined and scrolled
-into view. Hovering any region shows the rule and the numbers it was decided on
-(`chrome — repeats at this position on 3 of 3 pages · size_ratio 0.82 · band top ·
-ink_delta +89`). **Skipped (n)** lists every suppression with its reason. The tier
-slider (announce → summarise → full) filters the existing plan without re-analysing
-anything. **compare** plays the naive reading of the same file. The status line
-carries the self-check badge and the config hash.
+Drag a document onto the window. Furniture is greyed out on the page, and the part being
+spoken is outlined and scrolled into view. Hover any region to see the rule that
+classified it and the numbers behind it (`chrome — repeats at this position on 3 of 3
+pages · size_ratio 0.82 · band top`). **Skipped (n)** lists every skip with its reason.
+The tier slider moves between *announce* ("Heading. Paragraph. Figure 3."), *summarise*
+and *full*, without re-analysing the document. **Compare** plays the ordinary reading
+of the same file.
 
-## How it decides
+Reading starts as soon as the page is analysed. Figures are described in the background
+while the text is read, and reading only waits if it reaches a figure whose description
+is not ready yet.
+
+## Getting started
+
+Windows 10 or 11; developed and tested with Python 3.14.
 
 ```
-PDF text layer ─┐                                   ┌─ figures only ─> describer ─┐
-                ├─> regions ─> measure ─> classify ─┤                             ├─> plan ─> TTS
-scan ─> segment ┘   (boxes,    (line h,   (+ doc    └─> reconcile ─> order ─> bind┘   (pure)
-         + OCR       nature)    ink)      memory)       (tier 2)
+pip install -r requirements.txt
+python -m winnow fetch-models                   # once: EasyOCR weights (~100 MB)
+python -m winnow ui tests/corpus/lecture.pdf    # the window
 ```
 
-| module | stage |
+Without EasyOCR's weights, scans fall back to Windows' built-in OCR.
+
+### Figure descriptions (optional)
+
+Figures are described by [Qwen3-VL-2B](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct-GGUF)
+served locally by [llama.cpp](https://github.com/ggml-org/llama.cpp). Download
+`Qwen3VL-2B-Instruct-Q4_K_M.gguf` and `mmproj-Qwen3VL-2B-Instruct-Q8_0.gguf` (1.55 GB
+together) and llama.cpp's **Vulkan** build, then:
+
+```
+llama-server -m Qwen3VL-2B-Instruct-Q4_K_M.gguf --mmproj mmproj-Qwen3VL-2B-Instruct-Q8_0.gguf --host 127.0.0.1 --port 8080 -c 4096 -ngl 0
+python -m winnow ui DOC.pdf --describer llamacpp
+```
+
+`-ngl 0` runs the image encoder on the integrated GPU and the language model on the
+CPU, which was the fastest split on an Intel laptop (see Speed). The server listens on
+loopback only, so the offline guard still holds. Ollama works too:
+`--describer ollama:qwen3-vl:2b` after `ollama pull qwen3-vl:2b`. Without a model,
+figures fall back audibly to their caption.
+
+### Command line
+
+```
+python -m winnow read DOC                  # transcript; --speak to hear it, --tier 0|1|2
+python -m winnow compare DOC               # ordinary read-aloud vs Winnow
+python -m winnow render DOC out/           # every page with its regions drawn and labelled
+python -m winnow read DOC --no-repair --json   # raw output, exactly reproducible
+python -m pytest tests                     # 110 tests
+```
+
+`DOC` is a PDF or an image (PNG, JPG, TIFF). A PDF with a text layer is read directly;
+anything else goes through OCR.
+
+## Speed
+
+Measured on a laptop with an Intel i5-12500H, Iris Xe graphics and 16 GB of memory:
+
+| | time |
 | --- | --- |
-| `types.py` | `Region`, `Utterance`, frozen `Config` (every threshold), typed errors |
-| `pdf_adapter.py` | text layer → regions; sideways text; column gutters |
-| `pdf_figures.py` | figures (sparse clusters, or ones with a plotted line), their labels and panels; ruled, captioned tables |
-| `tables.py` | **pure**: rows, columns, headers and row groups from a table's words; header-qualified speech |
-| `segment.py` | pixels → boxes; work scale, polarity, small-text zoom; line count (8a); ink |
-| `lines.py` | **pure**: words → lines, geometrically (8e); never across a column gutter |
-| `ocr.py` | OCR stage: line boxes, strips for tall pages, one bounded re-read (tier 3) |
-| `chrome.py` | the furniture rules in priority order (§6), document memory (8b), margin bands |
-| `classify.py` | measures, runs the chrome rules, then kinds; `meta["why"]` and `meta["evidence"]` |
-| `reading_order.py` | columns, spanning blocks, margin notes slotted between paragraphs |
-| `caption_binding.py` | caption → figure or table, one each, like with like first |
-| `describe.py` | the VLM branch; `UNCLEAR`, parroted captions, timeouts → fallback |
-| `speech.py` | **pure** planner; one plan, three tiers |
-| `selfcheck.py` | tier 1 invariants, tier 2 cross-page reconciliation and gated repair |
-| `pipeline.py` | orchestration, process pool with in-order results, warm-up streaming |
-| `backends.py` | SAPI, describers (llama.cpp, Ollama); re-exports `ocr_backends` (EasyOCR, Windows OCR) — imported only by `pipeline` and `cli` |
-| `evaluate.py` | precision/recall pair, Cohen's kappa, tier 4 tuner with holdout gate |
-| `label_ui.py` | the labelling window for the benchmark (`winnow annotate`) |
+| PDF with a text layer, ready to speak | 0.5 s |
+| Scanned page, ready to speak | 2 s |
+| One figure description (image on the GPU, text on the CPU) | 3.9–4.7 s, in the background |
+| A 17 × 103 inch page of notes (13,445 px tall) | 89 s |
 
-Things that are enforced rather than hoped for (each has a test):
+On a **Snapdragon X Elite NPU** (measured through Qualcomm AI Hub), the OCR recogniser
+takes 19 ms per line with every layer on the NPU and gives identical text, against
+140 ms on the laptop CPU. The details, and every other number, are in
+[docs/measurements.md](docs/measurements.md).
 
-- **The title is never suppressed.** Three mechanisms protect it. Size is compared on
-  line height, not block height (8a). The repeat key includes position (8b). The
-  largest text on a page can't be suppressed by a small, faint, date or page-number
-  rule, and tier 2 won't repair it toward chrome (`title_suppressed` is a tier 1 error).
-- **Nothing is silently dropped.** Chrome is kept at tier 0 with its reason. Unreadable
-  ink is announced ("Text here could not be read."). Blank, unreadable and
-  furniture-only pages say so.
-- **Repair is earned.** It needs 3+ pages and a 2/3 majority, never happens on a tie,
-  is decided from a snapshot and applied in a fixed order, and is logged with its vote
-  count. `--no-repair` reproduces the raw output exactly. A two-page document refuses
-  to repair.
-- **No literal thresholds** in decision modules. An AST test checks this.
+## How it works
 
-## Bugs found while building (all now tests)
+```
+PDF text layer ─┐                                   ┌─ figures ─> vision model ─┐
+                ├─> regions ─> measure ─> classify ─┤                           ├─> plan ─> speech
+scan ─> segment ┘   (boxes)    (line      (+ whole- └─> check ─> order ─> bind ─┘  (pure)
+         + OCR                  height,    document
+                                ink)       memory)
+```
 
-- Faint grey furniture disappeared from scans entirely, because page-wide Otsu filed
-  it under background. Anything clearly darker than the paper now counts as ink.
-- "Red-black trees" was read as an equation, because the intra-word hyphen counted as
-  an operator.
-- Short footers outvoted paragraphs when computing the body ink/size reference. That
-  reference is now a character-weighted median.
-- A page with a figure and unreadable text spoke only the figure; the unread text
-  vanished without a word.
-- OCR at work resolution misread 3 words on `scan_p1.png`. At 2× it misread none
-  (`ocr_scale`). Unread regions get one bounded re-read at 4× (tier 3).
+1. **Regions.** A PDF's text layer gives words and graphics directly; figures, tables,
+   columns and sideways text are found from their geometry. Scans are segmented into
+   blocks and read with OCR on Winnow's own line boxes.
+2. **Classify.** Each region becomes furniture, heading, body, caption, figure, table,
+   equation or margin note. Furniture rules run in priority order, and the strongest
+   is document memory: text that repeats at the same position on several pages.
+3. **Check.** The document checks itself. The same text classified differently on
+   different pages is a contradiction; it is repaired only with a clear majority over
+   at least three pages, and otherwise reported and left alone.
+4. **Order and bind.** Columns are read in order, margin notes are placed between
+   paragraphs, and each caption is bound to its figure or table.
+5. **Plan.** A pure planner turns regions into what is said, at three depths. Nothing is
+   dropped: skipped regions keep their reasons.
 
-Found by the first real model and the first real document:
+The rules behind these decisions, and the failure modes they guard against, are in
+[docs/design.md](docs/design.md).
 
-- The describe prompt ("...if you cannot read the figure with confidence, reply with
-  exactly UNCLEAR") made Qwen3-VL-2B answer UNCLEAR for every figure, including a clear
-  tree it describes perfectly when asked plainly. Prompt v3 names what counts as
-  unreadable first.
-- The UNCLEAR check only looked at the start of the reply. The model wrote "The image
-  is UNCLEAR.", or described noise and ended with UNCLEAR, or said "not a clear or
-  readable image" with no UNCLEAR at all. Each would have been read aloud as a
-  description. Winnow now treats UNCLEAR anywhere, or an explicit admission, as unclear.
-- On a LaTeX paper every sentence came out glued: "presentaresiduallearningframework".
-  Words are placed with ~2 pt gaps and no space character, under pdfplumber's fixed
-  3 pt tolerance. The gap is now relative to font size (142 glued words -> 2 URLs).
-- A sideways arXiv stamp in the margin became about 20 "margin notes", read backwards
-  ("5102 ceD"). Sideways text is now read in its own direction, and in the margin it is
-  furniture: "arXiv:1512.03385v1 [cs.CV] 10 Dec 2015 — sideways text in the page margin".
-- On a two-column page, one median over all blocks landed on the left column, so every
-  narrow block in the right column became a "margin note".
-- A centred title and an author line, one block each at odd positions, chained two
-  columns into one, and the title was read after the whole left column. Columns now
-  need two blocks sharing a left edge, and anything above the column body is read first.
+| module | does |
+| --- | --- |
+| `types.py` | `Region`, `Utterance`, and `Config`: every threshold in one place |
+| `pdf_adapter.py`, `pdf_figures.py` | text layer → regions; figures, captions, tables, columns |
+| `segment.py`, `lines.py`, `ocr.py` | scans: page preparation, blocks, lines, OCR |
+| `chrome.py`, `classify.py` | furniture rules, then every other kind, with evidence |
+| `reading_order.py`, `caption_binding.py` | columns, margin notes, caption → figure |
+| `describe.py` | figure descriptions and their fallbacks |
+| `tables.py`, `speech.py` | pure: table reading, and the speech plan |
+| `selfcheck.py` | per-page checks, cross-page reconciliation and repair |
+| `pipeline.py` | orchestration; parallel page analysis, background describing |
+| `backends.py`, `ocr_backends.py` | voice, OCR engines and vision models, passed in |
+| `ui.py`, `ui_page.py`, `label_ui.py` | the window, the page view, the labelling window |
+| `evaluate.py` | benchmark scoring and threshold tuning |
 
-Found on real documents on the second day (each rebuilt as a synthetic test):
+## Accuracy and testing
 
-- A long page of dark-mode notes (`Combinatorics.pdf`, 17 × 103 inches) was read as
-  "Figure: No caption. Figure, not described." Light text on black made the background
-  "ink"; scaled to a fixed height the page was 262 px wide; and Windows OCR refuses
-  images over 10000 px. Pages are now inverted when dark, kept at least 1000 px wide,
-  rendered larger when letters come out under 8 px, and read in strips.
-- EasyOCR's own text detector took 6 minutes on that page. It now recognises Winnow's
-  line boxes instead: 97% of words (from 93%) in about a sixth of the time. Line boxes
-  widened by the dilation read a leading "~" or "'" on each line ("'Page 1" then
-  escaped the page-number rule); they are now tight plus a 25% margin.
-- "Top 10% of the page" was a whole screen on a long page, so content was skipped as
-  margin. Bands are now fractions of an A4-proportioned page at most.
-- Labels alone on their line ("Example", "Answer:") became margin notes; a note must
-  now sit beside body text. List dashes were read as "minus".
-- A code block's "}" and a drawn rule were each announced as "Text here could not be
-  read." Lone marks and drawn lines are now skipped with a reason.
-- Charts were not detected as figures, so tick labels were read out. A cluster with a
-  diagonal stroke (a plotted line) and less text than body is a figure; a table has only
-  horizontal and vertical rules. On 46 real clusters: 23/23 figures, 0/23 false.
-- A chart's invisible white background joined a page header, the chart and its caption.
-- Panels over one caption were two figures, one uncaptioned; a caption inside a
-  graphics cluster was swallowed as labels; a figure label on the caption's line ("F
-  Figure 2.") hid the caption; two captions bound to one chart and the table's caption
-  was never spoken. On the four papers, all 18 detected figures now carry their caption.
-- One paper's 20 px column gutter was under the 25 px word-joining gap, so its two
-  columns were read interleaved, row by row. Lines no longer join across a gutter.
-- "ResNet-152" was read "ResNet minus 152".
-- A scripted edit twice turned a regex's `\b` into a backspace character; the pattern
-  matched nothing and every test still passed. A test now rejects control characters.
+Every bug found on a real document became a test: 110 tests, which run without audio, a
+model or a device because the speech planner is pure. On the bundled test documents
+Winnow scores content precision 1.000, furniture recall 1.000 and 50/50 correct kinds.
+One person checked those labels, so treat that as a regression check, not a benchmark.
 
-Found on the third day:
+It has also been run on four arXiv papers (ResNet, Adam, Batch Normalization,
+Transformer) and a long page of dark-mode notes. On the papers it found all 23 charts
+and diagrams with no table mistaken for one, and read 21 captioned tables. On an
+excerpt of the notes, OCR read 66 of 69 words correctly.
 
-- The Batch Normalization paper captions its tables "Figure N" and draws every table
-  rule as a 0.48 pt embedded image, so its three tables had no rules and were read as
-  streams of numbers. Hairline images now count as rules, and a ruled grid under any
-  caption is a table. Boxed prose under a "Figure" caption is not a grid and stays text.
-  On the four papers: 21 tables, from 18, and no new false ones.
-- A group label centred on its rows ("(A)" on a line of its own, beside four rows)
-  gave its first two rows to the group above and was read as an empty row. When rules
-  separate the groups, every row between two rules now takes the one label there.
-- The window said nothing until every figure in the document had been described,
-  about 5 s each: a minute of silence for ten figures. It now shows and reads the
-  document at once, and describes figures behind the reader.
-- EasyOCR's default on CPU is an 8-bit recogniser; on this laptop it was twice as slow
-  as the full-precision one (285 vs 140 ms per line). Winnow now uses full precision:
-  as accurate on printed scans, about 5 words in 890 worse on a handwriting-style font.
-- The figure timings reported earlier (2.0-4.3 s) were measured with the model server's
-  cache warm from repeated runs. A figure the server has not seen took 5-7 s on the CPU.
+An independent benchmark (about 100 pages, two labellers) is the next step. The tools
+for it are included: a holdout planner, a labelling window, scoring and a gated
+threshold tuner ([docs/benchmark.md](docs/benchmark.md)).
+
+## Limitations
+
+- Tables are read only from a PDF's text layer, and only when captioned. Tables in scans
+  are read as plain text, and columns closer than 16 px merge.
+- OCR loses superscripts on scans (`x² + y² = r²` reads "x2 + Y2") and misreads some
+  handwriting-style fonts. Very long pages take over a minute on a laptop CPU.
+- A symbol a PDF's font does not map to Unicode comes out as "�".
+- Figure descriptions come from a 2-billion-parameter model: good on simple charts and
+  diagrams, and not always identical between runs.
+- Windows only: speech uses Windows' built-in voices, and OCR falls back to Windows OCR.
+
+What comes next is in [docs/roadmap.md](docs/roadmap.md).
+
+## License
+
+MIT. See [LICENSE](LICENSE).
